@@ -31,7 +31,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5541714504713066257}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &5541714504677169919
 SpriteRenderer:
@@ -131,7 +131,7 @@ GameObject:
   - component: {fileID: 6577973511322126307}
   - component: {fileID: 5558273781247070542}
   - component: {fileID: 6696045725687378170}
-  - component: {fileID: 6022292356894156928}
+  - component: {fileID: 9054579611493895554}
   - component: {fileID: 5541714504713066256}
   m_Layer: 8
   m_Name: Player
@@ -151,8 +151,8 @@ Transform:
   m_LocalPosition: {x: 0, y: -4.67, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 5541714506209079517}
   - {fileID: 5541714504677169918}
+  - {fileID: 5541714506209079517}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -258,6 +258,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 100
+  explosion: {fileID: 9208499893292268788, guid: a09d8ef6884854d1cb1f39591fa94540,
+    type: 3}
 --- !u!114 &6696045725687378170
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -272,7 +274,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   deathParticleSystemPrefab: {fileID: 9208499893292268788, guid: 4547429bc9075e64ebdaedb67be47559,
     type: 3}
---- !u!114 &6022292356894156928
+--- !u!114 &9054579611493895554
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -285,8 +287,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shield: {fileID: 5541714504677169914}
-  explosion: {fileID: 9208499893292268788, guid: a09d8ef6884854d1cb1f39591fa94540,
-    type: 3}
   shieldDuration: 0
   X2Duration: 0
   isX2: 0
@@ -353,5 +353,5 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5541714504713066257}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}

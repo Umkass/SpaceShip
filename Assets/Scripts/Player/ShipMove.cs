@@ -8,8 +8,8 @@ public class ShipMove : MonoBehaviour
 {
     #region Field Declarations
     //Set by GameSceneController
-    [HideInInspector] public float speed = 5f;
-    [HideInInspector] public float turnSpeed = 90f;
+    [HideInInspector] public float speed;
+    [HideInInspector] public float turnSpeed;
     private ShipInput shipInput;
 
     #endregion

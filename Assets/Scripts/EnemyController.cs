@@ -9,6 +9,8 @@ public class EnemyController : MonoBehaviour
     [Header("Prefabs")]
     public GameObject explosion;
     public ProjectileMove projectilePrefab;
+    private PowerUpManagament powerUpManagament;
+    private GameSceneController gameSceneController;
 
     // Set by GameSceneController
     [HideInInspector] public float shotSpeed;
@@ -20,8 +22,8 @@ public class EnemyController : MonoBehaviour
     private WaitForSeconds shotDelay;
     private WaitForSeconds angerDelay;
     private float shotSpeedxN;
-    private GameObject targetShip;
     private Transform currentTarget;
+    private Vector2 randomTarget;
     private SpriteRenderer spriteRenderer;
 
     #endregion
@@ -30,9 +32,12 @@ public class EnemyController : MonoBehaviour
 
     private void Start()
     {
+        gameSceneController = FindObjectOfType<GameSceneController>();
+        gameSceneController.ShipSpawned += FindCurrentTarget;
+        FindCurrentTarget();
+        powerUpManagament = GameObject.FindGameObjectWithTag("Player").GetComponent<PowerUpManagament>();
         spriteRenderer = GetComponent<SpriteRenderer>();
-        targetShip = GameObject.FindGameObjectWithTag("Player");
-        currentTarget = targetShip.GetComponent<Transform>();
+        randomTarget = ScreenBounds.GetRandomPosition();
         shotDelay = new WaitForSeconds(shotdelayTime);
         angerDelay = new WaitForSeconds(angerdelayTime);
         shotSpeedxN = shotSpeed * 1.5f;
@@ -48,10 +53,17 @@ public class EnemyController : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
-        Vector3 direction = currentTarget.position - transform.position;
-        float angle = Mathf.Atan2(direction.y, direction.x);
-        transform.rotation = Quaternion.Euler(0f, 0f, angle * Mathf.Rad2Deg - 90);
-        Move();
+        if (currentTarget != null)
+        {
+            Vector3 direction = currentTarget.position - transform.position;
+            float angle = Mathf.Atan2(direction.y, direction.x);
+            transform.rotation = Quaternion.Euler(0f, 0f, angle * Mathf.Rad2Deg - 90);
+            Move();
+        }
+        else
+        {
+            MoveRandomly();
+        }
     }
 
     private void Move()
@@ -59,7 +71,18 @@ public class EnemyController : MonoBehaviour
         if (Vector3.Distance(transform.position, currentTarget.position) > 0.5f)
             transform.position = Vector3.MoveTowards(transform.position, currentTarget.position, Time.deltaTime * speed);
     }
+    private void MoveRandomly()
+    {
+        if (Vector2.Distance(transform.position, randomTarget) > 0.5f)
+            transform.position = Vector2.MoveTowards(transform.position, randomTarget, Time.deltaTime * speed);
+        else
+            randomTarget = ScreenBounds.GetRandomPosition();
+    }
 
+    public void FindCurrentTarget()
+    {
+        currentTarget = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
+    }
     #endregion
 
     #region Collisons
@@ -67,11 +90,18 @@ public class EnemyController : MonoBehaviour
     private void OnCollisionEnter2D(Collision2D collision)
     {
         Destroy(collision.gameObject);
-        FindObjectOfType<HUDController>().UpdateScore(pointValue);
         GameObject xPlosion = Instantiate(explosion, transform.position, Quaternion.identity);
         xPlosion.transform.localScale = new Vector2(2, 2);
-        if (EnemyDestroyed != null)
-            EnemyDestroyed(pointValue);
+        if (!powerUpManagament.isX2)
+        {
+            FindObjectOfType<HUDController>().UpdateScore(pointValue);
+            EnemyDestroyed?.Invoke(pointValue);
+        }
+        else
+        {
+            FindObjectOfType<HUDController>().UpdateScore(pointValue * 2);
+            EnemyDestroyed?.Invoke(pointValue * 2);
+        }
         Destroy(gameObject);
     }
 
@@ -113,7 +143,6 @@ public class EnemyController : MonoBehaviour
     private void GetAngry()
     {
         spriteRenderer.color = Color.red;
-        currentTarget.position = ScreenBounds.GetRandomPosition();
         shotDelay = new WaitForSeconds(shotdelayTime / 3);
         shotSpeed = shotSpeedxN;
     }

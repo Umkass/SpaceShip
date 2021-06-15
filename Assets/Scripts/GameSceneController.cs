@@ -5,6 +5,7 @@ using System;
 public class GameSceneController : MonoBehaviour
 {
     public event EnemyDestroyedHandler ScoreUpdatedOnKill;
+    public event Action ShipSpawned;
     public event Action<int> LifeLost;
     public event Action Lost;
     #region Field Declarations
@@ -13,7 +14,7 @@ public class GameSceneController : MonoBehaviour
     [Space]
     [SerializeField] private EnemyController enemyPrefab;
     [SerializeField] private ShipMove playerShip;
-    [SerializeField] private PowerupController[] powerUpPrefabs;
+    [SerializeField] private PowerUpController[] powerUpPrefabs;
 
     [Header("Level Definitions")]
     [Space]
@@ -25,7 +26,7 @@ public class GameSceneController : MonoBehaviour
     [Range(3, 8)]
     private float playerSpeed = 5f;
     [Range(45,135)]
-    private float playerTurnSpeed = 90f;
+    private float playerTurnSpeed = 180f;
     [Range(1, 10)]
     public float shieldDuration = 3;
     [Range(1, 10)]
@@ -86,13 +87,13 @@ public class GameSceneController : MonoBehaviour
         ShipMove ship = Instantiate(playerShip, new Vector2(0, -4.67f), Quaternion.identity);
         ship.speed = playerSpeed;
         ship.turnSpeed = playerTurnSpeed;
-        ship.GetComponent<ShieldController>().shieldDuration = shieldDuration;
-        ship.GetComponent<ShieldController>().X2Duration = X2Duration;
-        ship.GetComponent<ShipHealth>().HitByEnemy += Ship_HitByEnemy;
+        ship.GetComponent<PowerUpManagament>().shieldDuration = shieldDuration;
+        ship.GetComponent<PowerUpManagament>().X2Duration = X2Duration;
+        ship.GetComponent<ShipHealth>().DiedByEnemy += Died_HitByEnemy;
+        ShipSpawned?.Invoke();
         yield return null;
     }
-
-    private void Ship_HitByEnemy()
+    private void Died_HitByEnemy()
     {
         lives--;
         LifeLost?.Invoke(lives);
@@ -127,11 +128,7 @@ public class GameSceneController : MonoBehaviour
     private void Enemy_EnemyDestroyed(int pointValue)
     {
         totalPoints += pointValue;
-        if (ScoreUpdatedOnKill != null)
-        {
-            ScoreUpdatedOnKill(totalPoints);
-        }
-
+        ScoreUpdatedOnKill?.Invoke(totalPoints);
     }
     private IEnumerator SpawnPowerUp()
     {

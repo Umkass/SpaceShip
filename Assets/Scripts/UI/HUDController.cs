@@ -65,11 +65,13 @@ public class HUDController : MonoBehaviour
 
     public void ShowRestartButton()
     {
+        Time.timeScale = 0.0f;
         restartButton.gameObject.SetActive(true);
     }
     public void RestartButton()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        Time.timeScale = 1.0f;
     }
 
     #endregion
