@@ -257,9 +257,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2459cf3b6c5ff8e4aa3441bdf27e783d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 100
+  health: 0
   explosion: {fileID: 9208499893292268788, guid: a09d8ef6884854d1cb1f39591fa94540,
     type: 3}
+  healthType: 1
 --- !u!114 &6696045725687378170
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -290,6 +291,7 @@ MonoBehaviour:
   shieldDuration: 0
   X2Duration: 0
   isX2: 0
+  isShield: 0
 --- !u!60 &5541714504713066256
 PolygonCollider2D:
   m_ObjectHideFlags: 0

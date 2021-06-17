@@ -7,10 +7,7 @@ public class EnemyController : MonoBehaviour
     #region Field Declarations
 
     [Header("Prefabs")]
-    public GameObject explosion;
     public ProjectileMove projectilePrefab;
-    private PowerUpManagament powerUpManagament;
-    private GameSceneController gameSceneController;
 
     // Set by GameSceneController
     [HideInInspector] public float shotSpeed;
@@ -25,17 +22,13 @@ public class EnemyController : MonoBehaviour
     private Transform currentTarget;
     private Vector2 randomTarget;
     private SpriteRenderer spriteRenderer;
-
     #endregion
-    public event EnemyDestroyedHandler EnemyDestroyed;
     #region Startup
 
     private void Start()
     {
-        gameSceneController = FindObjectOfType<GameSceneController>();
-        gameSceneController.ShipSpawned += FindCurrentTarget;
         FindCurrentTarget();
-        powerUpManagament = GameObject.FindGameObjectWithTag("Player").GetComponent<PowerUpManagament>();
+        GameManager.Instance.ShipSpawned += FindCurrentTarget;
         spriteRenderer = GetComponent<SpriteRenderer>();
         randomTarget = ScreenBounds.GetRandomPosition();
         shotDelay = new WaitForSeconds(shotdelayTime);
@@ -81,30 +74,11 @@ public class EnemyController : MonoBehaviour
 
     public void FindCurrentTarget()
     {
-        currentTarget = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
-    }
-    #endregion
-
-    #region Collisons
-
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        Destroy(collision.gameObject);
-        GameObject xPlosion = Instantiate(explosion, transform.position, Quaternion.identity);
-        xPlosion.transform.localScale = new Vector2(2, 2);
-        if (!powerUpManagament.isX2)
+        if (GameObject.FindGameObjectWithTag("Player"))
         {
-            FindObjectOfType<HUDController>().UpdateScore(pointValue);
-            EnemyDestroyed?.Invoke(pointValue);
+            currentTarget = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
         }
-        else
-        {
-            FindObjectOfType<HUDController>().UpdateScore(pointValue * 2);
-            EnemyDestroyed?.Invoke(pointValue * 2);
-        }
-        Destroy(gameObject);
     }
-
     #endregion
 
     #region Projectile control

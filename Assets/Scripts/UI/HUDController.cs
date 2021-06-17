@@ -3,38 +3,35 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class HUDController : MonoBehaviour
+public class HUDController : Singleton<HUDController>
 {
-	#region Field Declarations
+    #region Field Declarations
 
-	[Header("UI Components")]
+    [Header("UI Components")]
     [Space]
-	public Text scoreText;
+    public Text scoreText;
     public StatusText statusText;
-    public Button restartButton;
+    public Button onlyRestartButton;
+    [SerializeField] private PauseMenu pauseMenu;
 
     [Header("Ship Counter")]
     [SerializeField]
     [Space]
     private Image[] shipImages;
-    private GameSceneController gameSceneController;
     #endregion
 
-
-    private void Awake()
-    {
-      
-    }
     private void Start()
     {
-        gameSceneController = FindObjectOfType<GameSceneController>();
-        ShowStatus(gameSceneController.currentLevel.levelName);
-        gameSceneController.ScoreUpdatedOnKill += GameSceneController_ScoreUpdatedOnKill;
-        gameSceneController.LifeLost += HideShip;
-        gameSceneController.Lost += ShowRestartButton;
+        DontDestroyOnLoad(gameObject);
+        onlyRestartButton.onClick.AddListener(HandleOnlyRestartClicked);
+        GameManager.Instance.ScoreUpdatedOnKill += GameManager_ScoreUpdatedOnKill;
+        GameManager.Instance.LifeLost += HideShip;
+        GameManager.Instance.ShowCurrentStatus += ShowStatus;
+        GameManager.Instance.ShowPauseMenu += ShowPauseMenu;
+        GameManager.Instance.ShowRestartButton += ShowRestartButton;
     }
 
-    private void GameSceneController_ScoreUpdatedOnKill(int pointValue)
+    private void GameManager_ScoreUpdatedOnKill(int pointValue)
     {
         UpdateScore(pointValue);
     }
@@ -46,6 +43,10 @@ public class HUDController : MonoBehaviour
         scoreText.text = score.ToString("D5");
     }
 
+    public void ShowPauseMenu(bool isShowing)
+    {
+        pauseMenu.gameObject.SetActive(isShowing);
+    }
     public void ShowStatus(string newStatus)
     {
         statusText.gameObject.SetActive(true);
@@ -63,15 +64,13 @@ public class HUDController : MonoBehaviour
             ship.gameObject.SetActive(true);
     }
 
-    public void ShowRestartButton()
+    public void ShowRestartButton(bool isShowing)
     {
-        Time.timeScale = 0.0f;
-        restartButton.gameObject.SetActive(true);
+        onlyRestartButton.gameObject.SetActive(isShowing);
     }
-    public void RestartButton()
+    public void HandleOnlyRestartClicked()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-        Time.timeScale = 1.0f;
+        GameManager.Instance.RestartLevel();
     }
 
     #endregion

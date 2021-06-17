@@ -20,5 +20,6 @@ public class StatusText : MonoBehaviour
         statusText.CrossFadeAlpha(0, 1f, false);
         yield return new WaitForSeconds(1.01f);
         gameObject.SetActive(false);
+        yield break;
     }
 }

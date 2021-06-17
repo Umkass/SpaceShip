@@ -10,6 +10,7 @@ public class PowerUpManagament : MonoBehaviour
     [HideInInspector] public float X2Duration;
 
     [HideInInspector] public bool isX2;
+    [HideInInspector] public bool isShield;
     private WaitForSeconds shieldTimeOut;
     private WaitForSeconds X2TimeOut;
 
@@ -26,12 +27,14 @@ public class PowerUpManagament : MonoBehaviour
     public void EnableShield()
     {
         shield.SetActive(true);
+        isShield = true;
         StartCoroutine(DisableShield());
     }
     private IEnumerator DisableShield()
     {
         yield return shieldTimeOut;
         shield.SetActive(false);
+        isShield = false;
     }
 
     #endregion

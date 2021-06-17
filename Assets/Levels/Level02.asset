@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Level02
   m_EditorClassIdentifier: 
   levelName: Level 02
-  numberOfEnemies: 1
+  numberOfEnemies: 6
   hasPowerUps: 0
   enemySpawnDelay: 2
   enemyAngerDelay: 40

@@ -13,10 +13,13 @@ public class ShipInput : MonoBehaviour
     public event Action OnFire = delegate { };
     void Update()
     {
-        Horizontal = Input.GetAxis("Horizontal");
-        Vertical = Input.GetAxis("Vertical");
-        FireWeapons = Input.GetButtonDown("Fire1");
-        if (FireWeapons)
-            OnFire();
+        if(GameManager.Instance._currentGameState != GameManager.GameState.PAUSED)
+        {
+            Horizontal = Input.GetAxis("Horizontal");
+            Vertical = Input.GetAxis("Vertical");
+            FireWeapons = Input.GetButtonDown("Fire1");
+            if (FireWeapons)
+                OnFire();
+        }
     }
 }
